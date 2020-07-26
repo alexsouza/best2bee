@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Order status test</title>
+    <script>
+      function initialize() {
+        const eventSource = new EventSource(
+          "http://localhost:3001/api/emitter/order"
+        );
+
+        eventSource.onmessage = (e) => {
+          // const msg = JSON.parse(e.data);
+          // console.log(e.data);
+          document.getElementById("status").innerHTML = e.data;
+          //   document.getElementById("heap").innerHTML = msg.heap;
+          //   document.getElementById("nonheap").innerHTML = msg.nonHeap;
+        };
+
+        eventSource.onopen = (e) => console.log("open");
+
+        eventSource.onerror = (e) => {
+          if (e.readyState == EventSource.CLOSED) {
+            console.log("close");
+          } else {
+            console.log(e);
+          }
+        };
+
+        eventSource.addEventListener(
+          "second",
+          function (e) {
+            console.log("second", e.data);
+          },
+          false
+        );
+      }
+
+      window.onload = initialize;
+    </script>
+  </head>
+  <body>
+    <h1>Order Status</h1>
+
+    <h3>Status</h3>
+    <div id="status"></div>
+  </body>
+</html>
